@@ -6,7 +6,7 @@ import sqlite3
 import os
 
 # Define o banco de dados.
-database = './db/temp_db.db'
+database = './dbitems.dp/temp_db.db'
 
 # Obtém todos os 'item' válidos do banco de dados.
 # Retorna como uma 'list' de 'dict'.
