@@ -6,13 +6,13 @@ import sqlite3
 import os
 
 # Define o banco de dados.
-database = './dbitems.dp/temp_db.db'
+database = './teste.db'
 
 # Obtém todos os 'item' válidos do banco de dados.
 # Retorna como uma 'list' de 'dict'.
 
 
-def get_all_items():
+def get_all_owner():
 
     # Cria uma conexão com o banco de dados SQLite.
     conn = sqlite3.connect(database)
@@ -24,7 +24,7 @@ def get_all_items():
     cursor = conn.cursor()
 
     # Query para consultar os registrosn na tabela 'item'.
-    sql = "SELECT * FROM item WHERE item_status != 'off'"
+    sql = "SELECT * FROM owner WHERE owner_status != 'off'"
 
     # Executa o SQL acima no banco de dados.
     cursor.execute(sql)
@@ -48,7 +48,7 @@ def get_all_items():
     # Devolve os dados processados para quem solicitou.
     return res
 
-def get_one_item(id):
+def get_one_owner(id):
     
     # Incializa o banco de dados.
     conn = sqlite3.connect(database)
@@ -56,7 +56,7 @@ def get_one_item(id):
     cursor = conn.cursor()
     
     # Query de consulta.
-    sql = "SELECT * FROM item WHERE item_status != 'off' AND item_id = ?"
+    sql = "SELECT * FROM owner WHERE owner_status != 'off' AND owner_id = ?"
     
     # Executa o código passando o valor do ID.
     cursor.execute(sql, (id,))
@@ -94,7 +94,7 @@ os.system('cls')
  # Exemplo para obter um 'item' pelo ID.
 print(
     json.dumps(
-        get_one_item(1),
+        get_one_owner(5),
         ensure_ascii=False,
         indent=2
     )
