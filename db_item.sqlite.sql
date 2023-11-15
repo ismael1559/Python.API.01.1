@@ -25,7 +25,6 @@ VALUES
 	('Ana Souza', 'ana@example.com', 'senha456', '1985-05-20', '2023-03-21 18:19:00'),
 	('Pedro Lima', 'pedro@example.com', 'senha789', '1988-12-10', '2023-04-10 21:31:41');
 
-
 -- Cria a tabela 'item'.
 CREATE TABLE item (
 	item_id INTEGER PRIMARY KEY AUTOINCREMENT,
