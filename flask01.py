@@ -20,7 +20,40 @@ database = "./db/temp_db.db"
 
 @app.route("/items", methods=["GET"])
 def get_all():
-    return {"olá":"mundo"}
+    try:
+        # Conectar ao banco de dados SQLite.
+        conn = sqlite3.connect(database)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        # Consulta SQL para selecionar todos os itens ativos.
+        sql = "SELECT * FROM item WHERE item_status != 'off'"
+        cursor.execute(sql)
+        rows_data = cursor.fetchall()
+        conn.close()
+
+        # Converter os resultados em uma lista de dicionários.
+        list_data = []
+        for row_data in rows_data:
+            list_data.append(dict(row_data))
+
+        # Retornar os dados ou um erro se nenhum item for encontrado.
+        if list_data:
+            return list_data
+        else:
+            return {"error": "Nenhum item encontrado"}
+
+    # Tratamento de exceções.
+    except sqlite3.Error as error:
+        return {"error": f"Erro ao acessar o banco de dados: {str(error)}"}
+    except Exception as error:
+        return {"error": f"Erro inesperado: {str(error)}"}
+
+
+@app.route("/items/<int:id>", methods=["GET"])
+def get_one(id):
+    print(f"O ID é {id}")
+    return {"Olá": "mundo"}
 
 
 # Roda aplicativo Flask.
