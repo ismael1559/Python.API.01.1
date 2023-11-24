@@ -30,7 +30,7 @@ def prefix_remove(prefix, data):
     return new_data
 
 
-@app.route("/items", methods=["GET"])
+@app.route("/owners", methods=["GET"])
 def get_all():
 
     # Obtém todos os registros válidos de 'item'.
@@ -51,7 +51,7 @@ def get_all():
 
         # Executa o SQL.
         cursor.execute(
-            "SELECT * FROM item WHERE item_status = 'on' ORDER BY item_date DESC")
+            "SELECT * FROM owner WHERE owner_status != 'off' ORDER BY owner_name ASC")
 
         # Retorna todos os resultados da consulta para 'items_rows'.
         items_rows = cursor.fetchall()
@@ -70,7 +70,7 @@ def get_all():
         if items:
 
             # Remove prefixos dos campos.
-            new_items = [prefix_remove('item_', item) for item in items]
+            new_items = [prefix_remove('owner_', item) for item in items]
 
             # Se houver registros, retorna tudo.
             return new_items, 200
@@ -83,9 +83,13 @@ def get_all():
 
     except Exception as e:  # Outros erros.
         return {"error": f"Erro inesperado: {str(e)}"}, 500
+    
+#codigo pronto.
 
 
-@app.route("/items/<int:id>", methods=["GET"])
+
+
+@app.route("/owners/<int:id>", methods=["GET"])
 def get_one(id):
 
     # Obtém um registro único de 'item', identificado pelo 'id'.
@@ -101,7 +105,7 @@ def get_one(id):
 
         # Executa o SQL.
         cursor.execute(
-            "SELECT * FROM item WHERE item_id = ? AND item_status = 'on'", (id,))
+            "SELECT * FROM owner WHERE owner_status != 'off' AND owner_id = ?", (id,))
 
         # Retorna o resultado da consulta para 'item_row'.
         item_row = cursor.fetchone()
@@ -116,7 +120,7 @@ def get_one(id):
             item = dict(item_row)
 
             # Remove prefixos dos campos.
-            new_item = prefix_remove('item_', item)
+            new_item = prefix_remove('owner_', item)
 
             # Retorna item.
             return new_item, 200
@@ -131,7 +135,7 @@ def get_one(id):
         return {"error": f"Erro inesperado: {str(e)}"}, 500
 
 
-@app.route('/items', methods=["POST"])
+@app.route('/owners', methods=["POST"])
 def create():
 
     # Cadastra um novo registro em 'item'.
@@ -150,14 +154,15 @@ def create():
         cursor = conn.cursor()
 
         # Query que insere um novo registro na tabela 'item'.
-        sql = "INSERT INTO item (item_name, item_description, item_location, item_owner) VALUES (?, ?, ?, ?)"
+        sql = "INSERT INTO owner (owner_name, owner_birth, owner_email, owner_password) VALUES (?, ?, ?, ?)"
 
         # Dados a serem inseridos, obtidos do request.
         sql_data = (
             new_item['name'],
-            new_item['description'],
-            new_item['location'],
-            new_item['owner']
+            new_item['birth'],
+            new_item['email'],
+            new_item['password']
+            
         )
 
         # Executa a query, fazendo as devidas substituições dos curingas (?) pelos dados (sql_data).
@@ -243,7 +248,7 @@ def delete(id):
         return {"error": f"Erro inesperado: {str(e)}"}, 500
 
 
-@app.route("/items/<int:id>", methods=["PUT", "PATCH"])
+@app.route("/owners/<int:id>", methods=["PUT", "PATCH"])
 def edit(id):
 
     # Edita um registro em 'item', identificado pelo 'id'.
@@ -265,10 +270,10 @@ def edit(id):
 
         # Loop para atualizar os campos específicos do registro na tabela 'item'.
         # Observe que o prefixo 'item_' é adicionado ao(s) nome(s) do(s) campo(s).
-        set_clause = ', '.join([f"item_{key} = ?" for key in item_json.keys()])
+        set_clause = ', '.join([f"owner_{key} = ?" for key in item_json.keys()])
 
         # Monta SQL com base nos campos a serem atualizados.
-        sql = f"UPDATE item SET {set_clause} WHERE item_id = ? AND item_status = 'on'"
+        sql = f"UPDATE owner SET {set_clause} WHERE owner_id = ? AND owner_status != 'off'"
         cursor.execute(sql, (*item_json.values(), id))
 
         # Commit para salvar as alterações.
