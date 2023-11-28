@@ -190,7 +190,7 @@ def create():
         return {"error": f"Erro inesperado: {str(e)}"}, 500
 
 
-@app.route("/items/<int:id>", methods=["DELETE"])
+@app.route("/owners/<int:id>", methods=["DELETE"])
 def delete(id):
 
     # Marca, como apagado, um registro único de 'item', identificado pelo 'id'.
@@ -206,7 +206,7 @@ def delete(id):
         cursor = conn.cursor()
 
         # Query que pesquisa a existência do registro.
-        sql = "SELECT item_id FROM item WHERE item_id = ? AND item_status != 'off'"
+        sql = "SELECT owner_id FROM owner WHERE owner_id = ? AND owner_status != 'off'"
 
         # Executa a query.
         cursor.execute(sql, (id,))
@@ -218,7 +218,7 @@ def delete(id):
         if item_row:
 
             # Query para atualizar o item no banco de dados.
-            sql = "UPDATE item SET item_status = 'off' WHERE item_id = ?"
+            sql = "UPDATE owner SET owner_status = 'off' WHERE owner_id = ?"
 
             # Executa a query.
             cursor.execute(sql, (id,))
