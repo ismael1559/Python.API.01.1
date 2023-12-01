@@ -3,15 +3,20 @@
 # Importa bibliotecas.
 from flask import Flask, request, json, render_template
 import sqlite3
+from flask_cors import CORS
 
 # Cria aplicativo Flask.
 app = Flask(__name__)
+
+# O CORS permite requisições de domínios diferentes.
+# Exemplo: CORS(app, origins=["http://localhost:8080", "https://seusite.com"])
+CORS(app)
 
 # Configura o character set das transações HTTP para UTF-8.
 json.provider.DefaultJSONProvider.ensure_ascii = False
 
 # Especifica a base de dados SQLite3.
-database = "./db/temp_db.db"
+database = "./teste.db"
 
 
 def prefix_remove(prefix, data):
